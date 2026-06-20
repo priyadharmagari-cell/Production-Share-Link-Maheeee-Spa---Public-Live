@@ -52,7 +52,11 @@ export default function MyBookings({ onAddBookingTrigger, changeId, onBookingCha
   };
 
   const handleClearAllHistory = () => {
-    localStorage.removeItem('maheeee_spa_bookings');
+    try {
+      localStorage.removeItem('maheeee_spa_bookings');
+    } catch (e) {
+      console.error('Failed to clear bookings history: ', e);
+    }
     loadBookings();
     setIsConfirmingClearAll(false);
     if (onBookingChange) {

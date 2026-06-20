@@ -159,11 +159,11 @@ export default function App() {
               </div>
               <p className="text-[#5C544B] leading-normal text-[11px]">
                 <strong>English:</strong> Direct external links (WhatsApp / Calls) may be blocked by sandboxed frames. Please click <span className="font-semibold text-[#8C7355]">"Open in New Tab"</span> or use our <strong>"Copy Msg"</strong> options. 
-                To deploy directly to GitHub, go to the top Settings menu ⚙️ in AI Studio &rarr; Click <strong>"Export"</strong> &rarr; Choose <strong>"Connect GitHub"</strong> or <strong>"Export ZIP"</strong>.
+                To deploy directly to GitHub, go to the top Settings menu ⚙️ in AI Studio → Click <strong>"Export"</strong> → Choose <strong>"Connect GitHub"</strong> or <strong>"Export ZIP"</strong>.
               </p>
               <p className="text-[#8C7355] leading-normal text-[10px] italic">
                 <strong>తెలుగు:</strong> క్రాష్ లేదా లింకుల బ్లాక్ లేకుండా ఉండటానికి పైన ఉన్న <span className="font-bold underline">"Open in New Tab"</span> క్లిక్ చేయండి. 
-                గిట్‌హబ్‌కు కోడ్‌ను నేరుగా లైవ్ చేయడానికి, ఎడిటర్ పైన ఉన్న ⚙️ Settings &rarr; <strong className="underline">"Export"</strong> క్లిక్ చేసి <strong>"Connect GitHub"</strong> లేదా <strong>"Export ZIP"</strong> ను ఉపయోగించండి!
+                గిట్‌హబ్‌కు కోడ్‌ను నేరుగా లైవ్ చేయడానికి, ఎడిటర్ పైన ఉన్న ⚙️ Settings → <strong className="underline">"Export"</strong> క్లిక్ చేసి <strong>"Connect GitHub"</strong> లేదా <strong>"Export ZIP"</strong> ను ఉపయోగించండి!
               </p>
             </div>
 
@@ -171,7 +171,8 @@ export default function App() {
               {/* Copy Shared App Link */}
               <button
                 onClick={() => {
-                  safeCopyToClipboard("https://ais-pre-klkuksboktkg2b7tuhrqbg-490021625183.asia-southeast1.run.app").then(() => {
+                  const currentLiveUrl = typeof window !== 'undefined' ? window.location.href : "https://ais-pre-klkuksboktkg2b7tuhrqbg-490021625183.asia-southeast1.run.app";
+                  safeCopyToClipboard(currentLiveUrl).then(() => {
                     setCopiedShareUrl(true);
                     setTimeout(() => setCopiedShareUrl(false), 3000);
                   });
@@ -183,15 +184,20 @@ export default function App() {
               </button>
 
               {/* Development sandbox launcher */}
-              <a
-                href="https://ais-pre-klkuksboktkg2b7tuhrqbg-490021625183.asia-southeast1.run.app"
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                onClick={() => {
+                  try {
+                    const url = window.location.href || "https://ais-pre-klkuksboktkg2b7tuhrqbg-490021625183.asia-southeast1.run.app";
+                    window.open(url, '_blank');
+                  } catch (e) {
+                    console.error('Failed to launch window:', e);
+                  }
+                }}
                 className="flex-1 md:flex-initial bg-[#8C7355] hover:bg-[#735E46] text-white py-1.5 px-3 rounded-lg text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1 shadow-sm transition"
               >
                 <ExternalLink className="w-3.5 h-3.5" />
                 Open Live Spa Site
-              </a>
+              </button>
 
               <button
                 onClick={() => setShowHelperPortal(false)}

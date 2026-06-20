@@ -1,6 +1,6 @@
 {
   "name": "Maheeee Wellness Spa",
-  "description": "Premium luxury day spa in Kondapur, Hyderabad, featuring clean high-contrast aesthetics, custom therapeutic treatments, and a real-time reservation scheduling engine.",
+  "description": "Premium luxury day spa in Kondapur Hyderabad.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
