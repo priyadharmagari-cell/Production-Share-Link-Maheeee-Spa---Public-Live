@@ -18,6 +18,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { motion } from 'motion/react';
+import { safeCopyToClipboard } from '../utils/clipboard';
 
 interface LocationInfo {
   id: string;
@@ -99,9 +100,10 @@ export default function Locations({ onBookAtBranch }: LocationsProps) {
   ];
 
   const handleCopyAddress = (address: string, id: string) => {
-    navigator.clipboard.writeText(address);
-    setCopiedIndex(id);
-    setTimeout(() => setCopiedIndex(null), 2500);
+    safeCopyToClipboard(address).then(() => {
+      setCopiedIndex(id);
+      setTimeout(() => setCopiedIndex(null), 2500);
+    });
   };
 
   const filteredBranches = selectedCity === 'all' 

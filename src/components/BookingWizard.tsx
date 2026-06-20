@@ -21,6 +21,7 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import { THERAPIES, ADDONS, SPA_CONFIG } from '../data/catalog';
 import { Therapy, AddOn, Booking, TimeSlotStatus } from '../types';
+import { safeCopyToClipboard } from '../utils/clipboard';
 
 interface BookingWizardProps {
   onBookingSuccess: (newBooking: Booking) => void;
@@ -70,6 +71,8 @@ export default function BookingWizard({ onBookingSuccess, preSelectedTherapyId, 
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [paymentPhase, setPaymentPhase] = useState<'idle' | 'verifying' | 'indexing' | 'finishing'>('idle');
   const [copiedUpi, setCopiedUpi] = useState(false);
+  const [copiedLinkAdmin, setCopiedLinkAdmin] = useState(false);
+  const [copiedLinkUser, setCopiedLinkUser] = useState(false);
   const [showVoucherQr, setShowVoucherQr] = useState(false);
 
   const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -968,9 +971,10 @@ export default function BookingWizard({ onBookingSuccess, preSelectedTherapyId, 
                               <button
                                 type="button"
                                 onClick={() => {
-                                  navigator.clipboard.writeText('mahipalzah-3@oksbi');
-                                  setCopiedUpi(true);
-                                  setTimeout(() => setCopiedUpi(false), 2000);
+                                  safeCopyToClipboard('mahipalzah-3@oksbi').then(() => {
+                                    setCopiedUpi(true);
+                                    setTimeout(() => setCopiedUpi(false), 2000);
+                                  });
                                 }}
                                 className="w-full bg-white hover:bg-stone-50 text-[#3D342B] border border-stone-200 p-2.5 rounded-xl flex items-center justify-between transition-all duration-150 group shadow-xs active:scale-98"
                               >
@@ -1333,9 +1337,10 @@ export default function BookingWizard({ onBookingSuccess, preSelectedTherapyId, 
                               <button
                                 type="button"
                                 onClick={() => {
-                                  navigator.clipboard.writeText('mahipalzah-3@oksbi');
-                                  setCopiedUpi(true);
-                                  setTimeout(() => setCopiedUpi(false), 2000);
+                                  safeCopyToClipboard('mahipalzah-3@oksbi').then(() => {
+                                    setCopiedUpi(true);
+                                    setTimeout(() => setCopiedUpi(false), 2000);
+                                  });
                                 }}
                                 className="w-full bg-white hover:bg-stone-50 text-[#3D342B] border border-stone-200 px-2 py-1 rounded-lg flex items-center justify-between font-sans text-left"
                               >
@@ -1398,6 +1403,17 @@ export default function BookingWizard({ onBookingSuccess, preSelectedTherapyId, 
                           Secure Confirmation Dispatch Center
                         </p>
 
+                        {/* Iframe Sandbox Policy Warning Banner (English & Telugu) */}
+                        <div className="p-3 bg-amber-50 border border-amber-100 rounded-xl text-[11px] text-amber-800 space-y-1 leading-relaxed">
+                          <p className="font-bold">💡 Sandbox Notice / గమనిక:</p>
+                          <p>
+                            If clicking links shows an error inside this preview frame, please use the <strong>"Copy Msg"</strong> buttons below to copy the messages directly, or click <strong>"Open in New Tab"</strong> at the top right of your screen.
+                          </p>
+                          <p className="text-[10px] italic pt-1 text-amber-900 border-t border-amber-100/60">
+                            (AI Studio iFrame లో లింకులు ఓపెన్ కాకపోతే, కింద ఉన్న బటన్ల సహాయంతో మెసేజ్ కాపీ చేసుకోండి లేదా పైన ఉన్న "Open in New Tab" పై క్లిక్ చేయండి.)
+                          </p>
+                        </div>
+
                         {/* Notification to SPA ADMIN */}
                         <div className="flex items-start gap-3 bg-white p-3 rounded-xl border border-[#EAE2D8]">
                           <div className="p-2 rounded-lg bg-emerald-50 text-emerald-700">
@@ -1412,7 +1428,7 @@ export default function BookingWizard({ onBookingSuccess, preSelectedTherapyId, 
                             <p className="text-[10px] text-[#8E867C] leading-normal">
                               Dispatch receipt to our manager to finalize therapist allocations.
                             </p>
-                            <div className="pt-1.5 flex gap-2 items-center">
+                            <div className="pt-1.5 flex gap-2 items-center flex-wrap">
                               <a
                                 href={adminWaUri}
                                 target="_blank"
@@ -1423,6 +1439,22 @@ export default function BookingWizard({ onBookingSuccess, preSelectedTherapyId, 
                                 <Phone className="w-3 h-3" />
                                 Send Admin WA Msg
                               </a>
+                              
+                              <button
+                                onClick={() => {
+                                  safeCopyToClipboard(adminMessageText).then(() => {
+                                    setCopiedLinkAdmin(true);
+                                    setTimeout(() => setCopiedLinkAdmin(false), 3000);
+                                  }).catch((e) => {
+                                    console.error(e);
+                                  });
+                                }}
+                                className="bg-[#FAF7F2] hover:bg-[#EAE2D8] text-[#3D342B] border border-[#EAE2D8] py-1.5 px-3 rounded-lg text-[10px] font-bold uppercase tracking-wider transition inline-flex items-center gap-1.5"
+                              >
+                                <Copy className="w-3 h-3" />
+                                {copiedLinkAdmin ? 'Copied ✅' : 'Copy Msg'}
+                              </button>
+
                               {notifiedAdmin ? (
                                 <span className="text-emerald-700 text-[10px] font-bold flex items-center gap-0.5 animate-pulse">✓ Dispatched</span>
                               ) : (
@@ -1451,11 +1483,27 @@ export default function BookingWizard({ onBookingSuccess, preSelectedTherapyId, 
                                 href={userWaUri}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="bg-stone-800 hover:bg-stone-900 text-white py-1.5 px-3 rounded-lg text-[10px] font-bold uppercase tracking-wider transition inline-flex items-center gap-1.5"
+                                className="bg-[#3D342B] hover:bg-stone-950 text-white py-1.5 px-3 rounded-lg text-[10px] font-bold uppercase tracking-wider transition inline-flex items-center gap-1.5"
                               >
                                 <Phone className="w-3 h-3" />
                                 Send Guest WA Msg
                               </a>
+
+                              <button
+                                onClick={() => {
+                                  safeCopyToClipboard(userMessageText).then(() => {
+                                    setCopiedLinkUser(true);
+                                    setTimeout(() => setCopiedLinkUser(false), 3000);
+                                  }).catch((e) => {
+                                    console.error(e);
+                                  });
+                                }}
+                                className="bg-[#FAF7F2] hover:bg-[#EAE2D8] text-[#3D342B] border border-[#EAE2D8] py-1.5 px-3 rounded-lg text-[10px] font-bold uppercase tracking-wider transition inline-flex items-center gap-1.5"
+                              >
+                                <Copy className="w-3 h-3" />
+                                {copiedLinkUser ? 'Copied ✅' : 'Copy Msg'}
+                              </button>
+
                               <button
                                 onClick={() => {
                                   setNotifiedUser(true);

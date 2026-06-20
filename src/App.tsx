@@ -11,10 +11,13 @@ import {
   Activity, 
   MessageSquare,
   BookmarkCheck,
-  CheckCircle2
+  CheckCircle2,
+  Copy,
+  ExternalLink
 } from 'lucide-react';
 import { THERAPIES, SPA_CONFIG } from './data/catalog';
 import { Booking } from './types';
+import { safeCopyToClipboard } from './utils/clipboard';
 import Services from './components/Services';
 import BookingWizard from './components/BookingWizard';
 import InteractiveAbout from './components/InteractiveAbout';
@@ -38,6 +41,11 @@ export default function App() {
 
   // Toast confirmation notification state
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Help portal states
+  const [copiedDevUrl, setCopiedDevUrl] = useState(false);
+  const [copiedShareUrl, setCopiedShareUrl] = useState(false);
+  const [showHelperPortal, setShowHelperPortal] = useState(true);
 
   useEffect(() => {
     updateBookingsCount();
@@ -132,6 +140,70 @@ export default function App() {
           </div>
         </div>
       </div>
+
+      {/* Interactive Helper & Live Link Portal */}
+      {showHelperPortal && (
+        <div 
+          id="github-live-link-portal" 
+          className="bg-gradient-to-r from-[#FAF7F2] via-[#EAE2D8]/30 to-[#FAF7F2] border-b border-[#8C7355]/25 px-4 py-3 text-xs text-[#3D342B] font-sans"
+        >
+          <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div className="space-y-1 select-text">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="bg-[#8C7355] text-white text-[9px] uppercase font-bold tracking-widest px-2 py-0.5 rounded">
+                  PORTAL / గమనిక
+                </span>
+                <span className="font-serif font-bold text-[#3D342B]">
+                  Maheeee Spa - Public Live & GitHub Deployment Helper
+                </span>
+              </div>
+              <p className="text-[#5C544B] leading-normal text-[11px]">
+                <strong>English:</strong> Direct external links (WhatsApp / Calls) may be blocked by sandboxed frames. Please click <span className="font-semibold text-[#8C7355]">"Open in New Tab"</span> or use our <strong>"Copy Msg"</strong> options. 
+                To deploy directly to GitHub, go to the top Settings menu ⚙️ in AI Studio &rarr; Click <strong>"Export"</strong> &rarr; Choose <strong>"Connect GitHub"</strong> or <strong>"Export ZIP"</strong>.
+              </p>
+              <p className="text-[#8C7355] leading-normal text-[10px] italic">
+                <strong>తెలుగు:</strong> క్రాష్ లేదా లింకుల బ్లాక్ లేకుండా ఉండటానికి పైన ఉన్న <span className="font-bold underline">"Open in New Tab"</span> క్లిక్ చేయండి. 
+                గిట్‌హబ్‌కు కోడ్‌ను నేరుగా లైవ్ చేయడానికి, ఎడిటర్ పైన ఉన్న ⚙️ Settings &rarr; <strong className="underline">"Export"</strong> క్లిక్ చేసి <strong>"Connect GitHub"</strong> లేదా <strong>"Export ZIP"</strong> ను ఉపయోగించండి!
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
+              {/* Copy Shared App Link */}
+              <button
+                onClick={() => {
+                  safeCopyToClipboard("https://ais-pre-klkuksboktkg2b7tuhrqbg-490021625183.asia-southeast1.run.app").then(() => {
+                    setCopiedShareUrl(true);
+                    setTimeout(() => setCopiedShareUrl(false), 3000);
+                  });
+                }}
+                className="flex-1 md:flex-initial bg-white hover:bg-stone-50 border border-[#8C7355]/40 text-[#3D342B] py-1.5 px-3 rounded-lg text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1 shadow-sm transition"
+              >
+                <Copy className="w-3.5 h-3.5 text-[#8C7355]" />
+                {copiedShareUrl ? 'Copied Public Link! ✅' : 'Copy Public Live Link'}
+              </button>
+
+              {/* Development sandbox launcher */}
+              <a
+                href="https://ais-pre-klkuksboktkg2b7tuhrqbg-490021625183.asia-southeast1.run.app"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 md:flex-initial bg-[#8C7355] hover:bg-[#735E46] text-white py-1.5 px-3 rounded-lg text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1 shadow-sm transition"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+                Open Live Spa Site
+              </a>
+
+              <button
+                onClick={() => setShowHelperPortal(false)}
+                className="text-stone-400 hover:text-[#3D342B] font-mono text-sm px-2 transition"
+                title="Dismiss Portal"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Main Luxury Header Navigation */}
       <header className="bg-white border-b border-[#EAE2D8] sticky top-0 z-40 shadow-sm">
